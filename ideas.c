@@ -12,7 +12,7 @@ struct node *add_to_end(struct node *last, struct note value);
 void print_list(struct node *first);
 void *my_malloc(size_t size);
 
-int main(void) {
+/*int main(void) {
 
     note1.number = 1;
     note2.number = 2;
@@ -31,7 +31,7 @@ int main(void) {
 
 
     print_list(first);
-}
+}*/
 
 void *my_malloc(size_t size) {
     
