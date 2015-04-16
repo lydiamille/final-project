@@ -25,6 +25,7 @@ void fill_out_l2n(void);
 void fill_out_n2l(void);
 void test_conversions(void);
 void print_note(struct note note1);
+bool same_note(struct note note1, struct note note2);
 
 struct note {
     int number; //1-40
@@ -75,7 +76,7 @@ int main(int argc, char *argv[]) {
 
     read_file(fp);
     print_specs();
-    check_bassline(); 
+    check_bassline();
 }
 
 
@@ -140,8 +141,6 @@ void print_specs(void) {
         printf("major\n");
     else
         printf("minor\n");
-    printf("key number: %d\n", song1.key.number);
-
 
     printf("Bassline: ");
     for(i=0; i<song1.num_notes; i++)
@@ -279,7 +278,7 @@ struct note read_note(FILE *fp) {
     }
 
     if(ch == '\n')
-       new_note.last = true;
+        new_note.last = true;
 
     return new_note;
 }
@@ -385,39 +384,40 @@ bool check_bassline() {
     //make sure the bassline notes fit with the chords
     for(i=0; i<song1.num_notes; i++) {
         beat = song1.bassline[i];
-        if(beat.bassnote.letter != beat.chord.one.letter &&
-                beat.bassnote.letter != beat.chord.three.letter &&
-                beat.bassnote.letter != beat.chord.five.letter &&
-                beat.bassnote.letter != beat.chord.seven.letter) {
-            printf("ERROR: make sure that your bassline fits with the chords!\n");
-            printf("bassnote is: ");
+        if(!same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.one) &&
+           !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.three) &&
+           !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.five) &&
+           !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.seven)) {
+            printf("\nERROR: You might want to reconsider your bassnote on chord %d\n", i+1);
+            printf("       ");
             print_note(beat.bassnote);
-            printf("\nchord is: %d\n", beat.chord.scale_degree);
-            printf("one: ");
-            printf("number: %d\n", beat.chord.one.number);
-            print_note(beat.chord.one);
-            printf("\nthree: ");
-            printf("number: %d\n", beat.chord.one.number);
-            print_note(beat.chord.three);
-            printf("\nfive: ");
-            printf("number: %d\n", beat.chord.one.number);
-            print_note(beat.chord.five);
-            
-            //exit(EXIT_FAILURE);
+            printf(" isn't a member of the %s chord in", song1.bassline[i].chord.roman_num);
+            printf(" %c", song1.key.letter);
+            if(song1.key.quality != ' ')
+                printf("%c ", song1.key.quality);
+            else
+                printf(" ");
+            if(song1.major)
+                printf("major\n");
+            else
+                printf("minor\n");
+            exit(EXIT_FAILURE);
         }
     }
 
     //make sure the first soprano note fits in the chord
-    if(song1.sopnote.letter != song1.bassline[0].chord.one.letter &&
-            song1.sopnote.letter != song1.bassline[0].chord.three.letter &&
-            song1.sopnote.letter != song1.bassline[0].chord.five.letter &&
-            song1.sopnote.letter != song1.bassline[0].chord.seven.letter) {
+    if(!same_note(song1.sopnote, song1.bassline[0].chord.one) &&
+       !same_note(song1.sopnote, song1.bassline[0].chord.three) &&
+       !same_note(song1.sopnote, song1.bassline[0].chord.five) &&
+       !same_note(song1.sopnote, song1.bassline[0].chord.seven)) {
         printf("ERROR: make sure that the first soprano note fits with the chords!\n");
         exit(EXIT_FAILURE);
     }
 
     //make sure the third isn't doubled on the first note
-    if(song1.sopnote.letter == song1.bassline[0].chord.three.letter) {
+    struct note third;
+    third = song1.bassline[0].chord.three;
+    if(same_note(song1.sopnote, third) && same_note(song1.bassline[0].bassnote, third)) {
         printf("ERROR: Please don't double the third. That's egregious\n");
         exit(EXIT_FAILURE);
     }
@@ -425,11 +425,33 @@ bool check_bassline() {
 }
 
 
+//compares two notes to see if they're the same (they could be in dif octaves and still be the same note)
+bool same_note(struct note note1, struct note note2) {
+
+    if(note1.letter != note2.letter)
+        return false;
+    if(note1.quality != note2.quality)
+        return false;
+    return true;
+
+// note: this doesn't account for enharmonic equivalents
+// seeing as my function tends to use sharps for sharp keys
+// and flats for flat keys, this being a problem seems 
+// sufficiently improbable that i'll let it go
+}
+
+    
+
 void fill_out_l2n(void) {
     int i;
 
-    for(i=0; i<song1.num_notes; i++)
+    for(i=0; i<song1.num_notes; i++) {
         song1.bassline[i].bassnote = letter_to_number(song1.bassline[i].bassnote);
+        song1.bassline[i].chord.one = letter_to_number(song1.bassline[i].chord.one);
+        song1.bassline[i].chord.three = letter_to_number(song1.bassline[i].chord.three);
+        song1.bassline[i].chord.five = letter_to_number(song1.bassline[i].chord.five);
+        song1.bassline[i].chord.seven = letter_to_number(song1.bassline[i].chord.seven);
+    }
 
     song1.sopnote = letter_to_number(song1.sopnote);
     song1.key = letter_to_number(song1.key);
@@ -439,9 +461,13 @@ void fill_out_n2l(void) {
 
     int i;
 
-    for(i=0; i<song1.num_notes; i++)
+    for(i=0; i<song1.num_notes; i++) {
         song1.bassline[i].bassnote = number_to_letter(song1.bassline[i].bassnote);
-
+        song1.bassline[i].chord.one = number_to_letter(song1.bassline[i].chord.one);
+        song1.bassline[i].chord.three = number_to_letter(song1.bassline[i].chord.three);
+        song1.bassline[i].chord.five = number_to_letter(song1.bassline[i].chord.five);
+        song1.bassline[i].chord.seven = number_to_letter(song1.bassline[i].chord.seven);
+    }
     song1.sopnote = number_to_letter(song1.sopnote);
     song1.key = number_to_letter(song1.key);
 }
@@ -607,49 +633,69 @@ void determine_chords(void) {
 
     int i;
 
-    printf("key number: %d\n", song1.key.number);
     for(i=0; i<song1.num_notes; i++) {
         switch(song1.bassline[i].chord.scale_degree) {
-            case 1: song1.bassline[i].chord.one.number = song1.key.number;
-                    break;
-            case 2: song1.bassline[i].chord.one.number = song1.key.number + 2;
-                    break;
-            case 3: if(song1.major)
-                        song1.bassline[i].chord.one.number = song1.key.number + 4;
-                    else
-                        song1.bassline[i].chord.one.number = song1.key.number + 3;
-                    break;
-            case 4: song1.bassline[i].chord.one.number = song1.key.number + 5;
-                    break;
-            case 5: song1.bassline[i].chord.one.number = song1.key.number + 7;
-                    break;
-            case 6: if(song1.major)
-                        song1.bassline[i].chord.one.number = song1.key.number + 9;
-                    else
-                        song1.bassline[i].chord.one.number = song1.key.number + 8;
-                    break;
-            case 7: if(song1.major)
-                        song1.bassline[i].chord.one.number = song1.key.number + 10;
-                    else
-                        song1.bassline[i].chord.one.number = song1.key.number + 11;
-                    break;
+        case 1:
+            song1.bassline[i].chord.one.number = song1.key.number;
+            break;
+        case 2:
+            song1.bassline[i].chord.one.number = song1.key.number + 2;
+            break;
+        case 3:
+            if(song1.major)
+                song1.bassline[i].chord.one.number = song1.key.number + 4;
+            else
+                song1.bassline[i].chord.one.number = song1.key.number + 3;
+            break;
+        case 4:
+            song1.bassline[i].chord.one.number = song1.key.number + 5;
+            break;
+        case 5:
+            song1.bassline[i].chord.one.number = song1.key.number + 7;
+            break;
+        case 6:
+            if(song1.major)
+                song1.bassline[i].chord.one.number = song1.key.number + 9;
+            else
+                song1.bassline[i].chord.one.number = song1.key.number + 8;
+            break;
+        case 7:
+            if(song1.major)
+                song1.bassline[i].chord.one.number = song1.key.number + 10;
+            else
+                song1.bassline[i].chord.one.number = song1.key.number + 11;
+            break;
 
 
         }
-                    
+
         if(song1.major)
             song1.bassline[i].chord.three.number = song1.bassline[i].chord.one.number + 4;
         else
             song1.bassline[i].chord.three.number = song1.bassline[i].chord.one.number + 3;
-        
+
         song1.bassline[i].chord.five.number = song1.bassline[i].chord.one.number + 7;
 
         song1.bassline[i].chord.one.number %= 12;
         song1.bassline[i].chord.three.number %= 12;
         song1.bassline[i].chord.five.number %= 12;
-    }
+        
+        
+/*        printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
+        printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
+        printf("one: ");
+        print_note(song1.bassline[i].chord.one);
+        printf("number: %d\n", song1.bassline[i].chord.one.number);
+        printf("three: ");
+        print_note(song1.bassline[i].chord.three);
+        printf("number: %d\n", song1.bassline[i].chord.three.number);
+        printf("five: ");
+        print_note(song1.bassline[i].chord.five);
+        printf("number: %d\n", song1.bassline[i].chord.five.number);
+  */  }
 
     fill_out_n2l();
+
 }
 
 void test_conversions(void) {
