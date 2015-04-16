@@ -7,6 +7,6 @@ Write a bassline with a maximum of twenty notes
 
 >> Specify Bassline: A3 D2 E3 A2
 
->> Specify Soprano Starting Note: C#
+>> Specify Soprano Starting Note: C#5
 
 >> Specify Chords: I IV V I 

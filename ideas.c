@@ -1,19 +1,11 @@
+//ideas.c
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "ideas.h"
 
-struct note {
-    int number;
-    int letter;
-    int quality;
-    int octave;
-    bool last;
-} note1, note2, note3;
+struct note note1, note2, note3;
 
-struct node {
-    struct note value;
-    struct node *next;
-};
 
 struct node *add_to_beginning(struct node *first, struct note value);
 struct node *add_to_end(struct node *last, struct note value);
