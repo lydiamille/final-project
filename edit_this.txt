@@ -3,10 +3,10 @@ I'll do your music theory homework for you!
 Use all capital letters to refer to note names
 Write a bassline with a maximum of twenty notes
 
->> Specify Key: A minor
+>> Specify Key: A maj
 
->> Specify Bassline: C#3 D2 E3 A2
+>> Specify Bassline: A3 D2 E3 A2
 
->> Specify Soprano Starting Note: E5
+>> Specify Soprano Starting Note: C#
 
->> Specify Chords: i IV V I 
+>> Specify Chords: I IV V I 

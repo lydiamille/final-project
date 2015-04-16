@@ -246,6 +246,7 @@ struct note read_note(FILE *fp) {
 
     new_note.last = false;
     new_note.quality = ' ';
+    new_note.octave = -1;
 
     while((ch = fgetc(fp)) == ' ')
         ;
@@ -279,6 +280,16 @@ struct note read_note(FILE *fp) {
 
     if(ch == '\n')
         new_note.last = true;
+
+    if(new_note.octave == -1) {
+        printf("ERROR: enter an octave number for each note\n");
+        printf("       ");
+        printf("middle C is C4. higher octaves are higher numbers, and vice versa\n");
+        printf("       ");
+        printf("(google it if you're confused)\n");
+        exit(EXIT_FAILURE);
+    }
+            
 
     return new_note;
 }
@@ -385,9 +396,9 @@ bool check_bassline() {
     for(i=0; i<song1.num_notes; i++) {
         beat = song1.bassline[i];
         if(!same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.one) &&
-           !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.three) &&
-           !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.five) &&
-           !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.seven)) {
+                !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.three) &&
+                !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.five) &&
+                !same_note(song1.bassline[i].bassnote, song1.bassline[i].chord.seven)) {
             printf("\nERROR: You might want to reconsider your bassnote on chord %d\n", i+1);
             printf("       ");
             print_note(beat.bassnote);
@@ -407,11 +418,23 @@ bool check_bassline() {
 
     //make sure the first soprano note fits in the chord
     if(!same_note(song1.sopnote, song1.bassline[0].chord.one) &&
-       !same_note(song1.sopnote, song1.bassline[0].chord.three) &&
-       !same_note(song1.sopnote, song1.bassline[0].chord.five) &&
-       !same_note(song1.sopnote, song1.bassline[0].chord.seven)) {
-        printf("ERROR: make sure that the first soprano note fits with the chords!\n");
+            !same_note(song1.sopnote, song1.bassline[0].chord.three) &&
+            !same_note(song1.sopnote, song1.bassline[0].chord.five) &&
+            !same_note(song1.sopnote, song1.bassline[0].chord.seven)) {
+        printf("ERROR: your first soprano note doesn't fit with the chord!\n");
         exit(EXIT_FAILURE);
+        printf("       ");
+        print_note(song1.sopnote);
+        printf(" isn't a member of the %s chord in", song1.bassline[0].chord.roman_num);
+        printf(" %c", song1.key.letter);
+        if(song1.key.quality != ' ')
+            printf("%c ", song1.key.quality);
+        else
+            printf(" ");
+        if(song1.major)
+            printf("major\n");
+        else
+            printf("minor\n");
     }
 
     //make sure the third isn't doubled on the first note
@@ -436,11 +459,11 @@ bool same_note(struct note note1, struct note note2) {
 
 // note: this doesn't account for enharmonic equivalents
 // seeing as my function tends to use sharps for sharp keys
-// and flats for flat keys, this being a problem seems 
+// and flats for flat keys, this being a problem seems
 // sufficiently improbable that i'll let it go
 }
 
-    
+
 
 void fill_out_l2n(void) {
     int i;
@@ -679,20 +702,21 @@ void determine_chords(void) {
         song1.bassline[i].chord.one.number %= 12;
         song1.bassline[i].chord.three.number %= 12;
         song1.bassline[i].chord.five.number %= 12;
-        
-        
-/*        printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
-        printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
-        printf("one: ");
-        print_note(song1.bassline[i].chord.one);
-        printf("number: %d\n", song1.bassline[i].chord.one.number);
-        printf("three: ");
-        print_note(song1.bassline[i].chord.three);
-        printf("number: %d\n", song1.bassline[i].chord.three.number);
-        printf("five: ");
-        print_note(song1.bassline[i].chord.five);
-        printf("number: %d\n", song1.bassline[i].chord.five.number);
-  */  }
+
+
+        /*        printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
+                printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
+                printf("one: ");
+                print_note(song1.bassline[i].chord.one);
+                printf("number: %d\n", song1.bassline[i].chord.one.number);
+                printf("three: ");
+                print_note(song1.bassline[i].chord.three);
+                printf("number: %d\n", song1.bassline[i].chord.three.number);
+                printf("five: ");
+                print_note(song1.bassline[i].chord.five);
+                printf("number: %d\n", song1.bassline[i].chord.five.number);
+          */
+    }
 
     fill_out_n2l();
 
