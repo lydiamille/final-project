@@ -3,7 +3,7 @@ I'll do your music theory homework for you!
 Use all capital letters to refer to note names
 Write a bassline with a maximum of twenty notes
 
->> Specify Key: A2 maj
+>> Specify Key: A maj
 
 >> Specify Bassline: A3 D2 E3 A2
 

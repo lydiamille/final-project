@@ -6,7 +6,6 @@
 
 struct note note1, note2, note3;
 
-
 struct node *add_to_beginning(struct node *first, struct note value);
 struct node *add_to_end(struct node *last, struct note value);
 void print_list(struct node *first);
@@ -51,7 +50,7 @@ struct node *add_to_beginning(struct node *first, struct note value) {
     new_node = my_malloc(sizeof(struct node));
     
     new_node->value = value;
-    new_node->next = first;
+    new_node->next[0] = first;
 
     return new_node;
 }
@@ -62,8 +61,8 @@ struct node *add_to_end(struct node *last, struct note value) {
     new_node = my_malloc(sizeof(struct node));
 
     new_node->value = value;
-    new_node->next = NULL;
-    last->next = new_node;
+    new_node->next[0] = NULL;
+    last->next[0] = new_node;
     
     return new_node;
 }
@@ -73,7 +72,7 @@ void print_list(struct node *first) {
     
     struct node *p;
 
-    for(p = first; p != NULL; p = p->next)
+    for(p = first; p != NULL; p = p->next[0])
         printf("%d ", p->value.number);
 
     printf("\n");

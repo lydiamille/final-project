@@ -33,7 +33,23 @@ int read_file(FILE *fp) {
 
     // get the key
     find_input(fp);
-    song1.key = read_note(fp);
+    song1.key.quality = ' ';
+    while((ch = fgetc(fp)) == ' ')
+        ;
+    while(ch != ' ' && ch != '\n') {
+        if(ch >= 65 && ch <= 90) {
+            if(ch < 72)
+                song1.key.letter = ch;
+            else {
+                printf("ERROR: %c is an invalid note letter\n", ch);
+                exit(EXIT_FAILURE);
+            }
+        }
+        if(ch == '#' || ch == 'b')
+            song1.key.quality = ch;
+
+        ch = fgetc(fp);
+    }
     song1.major = major(fp);
     if(song1.key.letter == 'C' || song1.key.letter == 'D')
         song1.key.octave = 3;
@@ -234,8 +250,6 @@ struct note read_note(FILE *fp) {
         printf("(google it if you're confused)\n");
         exit(EXIT_FAILURE);
     }
-
-
     return new_note;
 }
 
@@ -427,7 +441,7 @@ void determine_chords(void) {
         song1.bassline[i].chord.five.number %= 12;
 
 
-        /*        printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
+/*                printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
                 printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
                 printf("one: ");
                 print_note(song1.bassline[i].chord.one);
@@ -438,9 +452,10 @@ void determine_chords(void) {
                 printf("five: ");
                 print_note(song1.bassline[i].chord.five);
                 printf("number: %d\n", song1.bassline[i].chord.five.number);
-          */
+  */        
     }
 
+    fill_out_n2l();
 }
 
 //checks to make sure the bassline (and the first soprano note) fits with the chord progression. True if it's all good
