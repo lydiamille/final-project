@@ -5,7 +5,7 @@
 
 struct node {
     struct note value;
-    struct node *next[10];
+    struct node *next;
 };
 
 struct node *add_to_beginning(struct node *first, struct note value);
