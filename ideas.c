@@ -48,8 +48,10 @@ void print_list(struct node *first) {
     
     struct node *p;
 
-    for(p = first; p != NULL; p = p->next)
-        printf("%d ", p->value.number);
+    for(p = first; p != NULL; p = p->next) {
+        print_note(p->value);
+        printf(" ");
+    }
 
     printf("\n");
 }

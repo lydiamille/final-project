@@ -1,5 +1,5 @@
 run: bev.o file_access.o ideas.o
-	gcc -o run bev.o file_access.o ideas.o 
+	gcc -g -o run bev.o file_access.o ideas.o 
 bev.o: bev.c file_access.h ideas.h
 	gcc -g -c bev.c
 file_access.o: file_access.c file_access.h

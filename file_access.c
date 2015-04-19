@@ -576,7 +576,7 @@ void fill_out_n2l(void) {
 // for instance, C#5 (C4 is middle C, and C5 is the C an octave higher, etc).
 // This function converts the note into number form, where the lowest note in the bass's
 // range (E2) is designated '0', and each half step above that gets a new number. The
-// soprano's range maxes out at a G5, which is note 40.
+// soprano's range maxes out at a G5, which is note 39.
 struct note letter_to_number(struct note current_note) {
 
 
@@ -591,9 +591,9 @@ struct note letter_to_number(struct note current_note) {
     if(current_note.letter == 'B')
         current_note.number = (current_note.octave - 2)*12 + 7;
     if(current_note.letter == 'C')
-        current_note.number = (current_note.octave - 2)*12 + 8;
+        current_note.number = (current_note.octave - 3)*12 + 8;
     if(current_note.letter == 'D')
-        current_note.number = (current_note.octave - 2)*12 + 10;
+        current_note.number = (current_note.octave - 3)*12 + 10;
 
     if(current_note.quality == '#')
         current_note.number++;

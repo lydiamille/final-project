@@ -30,12 +30,11 @@ int main(int argc, char *argv[]) {
     }
 
     read_file(fp);
-    //print_specs();
+    print_specs();
     check_bassline();
     write_best_line();
 
 }
-
 
 void write_best_line(void) {
 
@@ -45,7 +44,7 @@ void write_best_line(void) {
     struct node *first;
     struct node *last;
 
-    first = malloc(sizeof(struct node));
+    first = my_malloc(sizeof(struct node));
     first->value = song1.sopnote;
     first->next = NULL;
     last = first;
@@ -58,7 +57,7 @@ void write_best_line(void) {
     print_list(first);
 }
 
-//given the previous soprano note, and the chord number, 
+//given (a pointer to) the previous soprano note, and the chord number,
 //finds a possible next note for the melody and returns it
 //Returns a failcase note struct if dead end
 struct note next_note(struct node *last, int chord_num) {
@@ -68,7 +67,7 @@ struct note next_note(struct node *last, int chord_num) {
 
     for(i = last->value.number - 2; i < last->value.number + 3; i++) {
         current_note.number = i;
-        number_to_letter(current_note);
+        current_note = number_to_letter(current_note);
         if(note_fits(current_note, song1.bassline[chord_num]))
             return current_note;
     }
@@ -76,28 +75,29 @@ struct note next_note(struct node *last, int chord_num) {
     return current_note;
 }
 
+//returns true if this is an acceptable next note (ie the note is in the chord and the third isn't doubled)
 bool note_fits(struct note current_note, struct beat beat) {
 
     if(in_chord(current_note, beat.chord) && !doubled_third(current_note, beat))
         return true;
-   
-
     return false;
 }
 
+//returns true if the note is a member of the chord
 bool in_chord(struct note current_note, struct chord chord) {
 
     if(same_note(current_note, chord.one) || same_note(current_note, chord.three) || same_note(current_note, chord.five))
-            return true;
+        return true;
     return false;
 }
 
+//returns true if the third is indeed doubled for the given beat and note
 bool doubled_third(struct note current_note, struct beat beat) {
 
     struct note third;
     third = beat.chord.three;
     if(same_note(current_note, third) && same_note(beat.bassnote, third))
-       return true; 
+        return true;
     return false;
 }
 
