@@ -1,0 +1,14 @@
+//song 1
+I'll do your music theory homework for you! 
+
+Use all capital letters to refer to note names
+Write a bassline with a maximum of twenty notes
+(don't bother to put inversions, it's apparent from the bassline)
+
+>> Specify Key: F major
+
+>> Specify Bassline: F3 F3 F3 C3 C3 F3
+
+>> Specify Soprano Starting Note: A4
+
+>> Specify Chords: I IV I V V I
