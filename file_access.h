@@ -24,6 +24,8 @@ struct chord {
 
 struct beat {
     struct note bassnote;
+    struct note sopnote;
+    int interval;
     struct chord chord;
 };
 
@@ -31,7 +33,6 @@ struct song {
     bool major;
     struct note key;
     struct beat bassline[20];
-    struct note sopnote;
     int num_notes;
     int num_chords;
 } song1;

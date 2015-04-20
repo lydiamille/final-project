@@ -67,7 +67,7 @@ int read_file(FILE *fp) {
 
     // get the soprano note (letter, quality, and octave)
     find_input(fp);
-    song1.sopnote = read_note(fp);
+    song1.bassline[0].sopnote = read_note(fp);
 
     // figures out the note numbers for soprano note and bassline notes
     fill_out_l2n();
@@ -109,7 +109,7 @@ void print_specs(void) {
     printf("\n");
 
     printf("Starting soprano note: ");
-    print_note(song1.sopnote);
+    print_note(song1.bassline[0].sopnote);
     printf("\n");
 
     printf("Chord Progression: ");
@@ -441,18 +441,18 @@ void determine_chords(void) {
         song1.bassline[i].chord.five.number %= 12;
 
 
-/*                printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
-                printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
-                printf("one: ");
-                print_note(song1.bassline[i].chord.one);
-                printf("number: %d\n", song1.bassline[i].chord.one.number);
-                printf("three: ");
-                print_note(song1.bassline[i].chord.three);
-                printf("number: %d\n", song1.bassline[i].chord.three.number);
-                printf("five: ");
-                print_note(song1.bassline[i].chord.five);
-                printf("number: %d\n", song1.bassline[i].chord.five.number);
-  */        
+        /*                printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
+                        printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
+                        printf("one: ");
+                        print_note(song1.bassline[i].chord.one);
+                        printf("number: %d\n", song1.bassline[i].chord.one.number);
+                        printf("three: ");
+                        print_note(song1.bassline[i].chord.three);
+                        printf("number: %d\n", song1.bassline[i].chord.three.number);
+                        printf("five: ");
+                        print_note(song1.bassline[i].chord.five);
+                        printf("number: %d\n", song1.bassline[i].chord.five.number);
+          */
     }
 
     fill_out_n2l();
@@ -495,14 +495,14 @@ bool check_bassline() {
     }
 
     //make sure the first soprano note fits in the chord
-    if(!same_note(song1.sopnote, song1.bassline[0].chord.one) &&
-            !same_note(song1.sopnote, song1.bassline[0].chord.three) &&
-            !same_note(song1.sopnote, song1.bassline[0].chord.five) &&
-            !same_note(song1.sopnote, song1.bassline[0].chord.seven)) {
+    if(!same_note(song1.bassline[0].sopnote, song1.bassline[0].chord.one) &&
+            !same_note(song1.bassline[0].sopnote, song1.bassline[0].chord.three) &&
+            !same_note(song1.bassline[0].sopnote, song1.bassline[0].chord.five) &&
+            !same_note(song1.bassline[0].sopnote, song1.bassline[0].chord.seven)) {
         printf("ERROR: your first soprano note doesn't fit with the chord!\n");
         exit(EXIT_FAILURE);
         printf("       ");
-        print_note(song1.sopnote);
+        print_note(song1.bassline[0].sopnote);
         printf(" isn't a member of the %s chord in", song1.bassline[0].chord.roman_num);
         printf(" %c", song1.key.letter);
         if(song1.key.quality != ' ')
@@ -518,7 +518,7 @@ bool check_bassline() {
     //make sure the third isn't doubled on the first note
     struct note third;
     third = song1.bassline[0].chord.three;
-    if(same_note(song1.sopnote, third) && same_note(song1.bassline[0].bassnote, third)) {
+    if(same_note(song1.bassline[0].sopnote, third) && same_note(song1.bassline[0].bassnote, third)) {
         printf("ERROR: Please don't double the third. That's egregious\n");
         exit(EXIT_FAILURE);
     }
@@ -554,7 +554,7 @@ void fill_out_l2n(void) {
         song1.bassline[i].chord.seven = letter_to_number(song1.bassline[i].chord.seven);
     }
 
-    song1.sopnote = letter_to_number(song1.sopnote);
+    song1.bassline[0].sopnote = letter_to_number(song1.bassline[0].sopnote);
     song1.key = letter_to_number(song1.key);
 }
 
@@ -569,7 +569,7 @@ void fill_out_n2l(void) {
         song1.bassline[i].chord.five = number_to_letter(song1.bassline[i].chord.five);
         song1.bassline[i].chord.seven = number_to_letter(song1.bassline[i].chord.seven);
     }
-    song1.sopnote = number_to_letter(song1.sopnote);
+    song1.bassline[0].sopnote = number_to_letter(song1.bassline[0].sopnote);
     song1.key = number_to_letter(song1.key);
 }
 // previously, soprano notes and bassline notes were stored in letter-quality-octave form.
