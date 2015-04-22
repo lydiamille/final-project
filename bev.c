@@ -59,9 +59,8 @@ void write_best_line(void) {
         }
         else {
             printf("\nUnfortunately, there exists no soprano line that follows your\n");
-            printf("input specifications (and thus whims of your heart) that also\n");
-            printf("follows part writing rules (and thus the whims of Bach\'s\n");
-            printf("heart). Sucks for you.\n\n");
+            printf("input specifications that also follows part writing rules\n");
+            printf(" .... Sucks for you.\n\n");
             exit(EXIT_FAILURE);
         }
     }

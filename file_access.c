@@ -356,6 +356,7 @@ Below are implementation functions
 ***********************************
 ***********************************/
 
+//a debugger function to make sure letter_to_number, number_to_letter are working
 void test_conversions(void) {
 
     struct note note1;
@@ -380,7 +381,7 @@ void test_conversions(void) {
     printf("\n");
 }
 
-
+//prints a note in letter-quality-octave form
 void print_note(struct note note1) {
     printf("%c", note1.letter);
     if(note1.quality != ' ')
@@ -388,7 +389,7 @@ void print_note(struct note note1) {
     printf("%d ", note1.octave);
 }
 
-
+//goes through stored chords and enters information for scale degrees one, three and five
 void determine_chords(void) {
 
     int i;
@@ -440,19 +441,6 @@ void determine_chords(void) {
         song1.bassline[i].chord.three.number %= 12;
         song1.bassline[i].chord.five.number %= 12;
 
-
-        /*                printf("\nHERE WE ARE IN DETERMINE CHORDS\n");
-                        printf("chord is: %d\n", song1.bassline[i].chord.scale_degree);
-                        printf("one: ");
-                        print_note(song1.bassline[i].chord.one);
-                        printf("number: %d\n", song1.bassline[i].chord.one.number);
-                        printf("three: ");
-                        print_note(song1.bassline[i].chord.three);
-                        printf("number: %d\n", song1.bassline[i].chord.three.number);
-                        printf("five: ");
-                        print_note(song1.bassline[i].chord.five);
-                        printf("number: %d\n", song1.bassline[i].chord.five.number);
-          */
     }
 
     fill_out_n2l();
@@ -616,10 +604,19 @@ struct note number_to_letter(struct note note1) {
     note1.quality = ' ';
 
     if(song1.key.quality == ' ') {
-        if(song1.key.letter == 'F')
-            flats = true;
-        else
-            sharps = true;
+        if(song1.major){
+            if(song1.key.letter == 'F')
+                flats = true;
+            else
+                sharps = true;
+        }
+        else {
+            if(song1.key.letter == 'F' || song1.key.letter == 'C' ||
+            song1.key.letter == 'G' || song1.key.letter == 'D')
+                flats = true;
+            else
+                sharps = true;
+        }
     }
     else {
         if(song1.key.quality == '#')
